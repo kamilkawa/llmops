@@ -1,0 +1,31 @@
+services:
+  openweather-mcp:
+    build:
+      context: ..
+      dockerfile: homework/Dockerfile
+    command: uv run python homework/openweather_mcp.py
+    ports:
+      - "8010:8010"
+    env_file:
+      - ../.env
+    environment:
+      OPENWEATHERMAP_API_KEY: ${OPENWEATHERMAP_API_KEY}
+
+  chat:
+    build:
+      context: ..
+      dockerfile: homework/Dockerfile
+    command: uv run python -m homework.chat
+    depends_on:
+      - openweather-mcp
+    env_file:
+      - ../.env
+    environment:
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      OPENWEATHERMAP_API_KEY: ${OPENWEATHERMAP_API_KEY}
+      TAVILY_API_KEY: ${TAVILY_API_KEY}
+      LLM_BASE_URL: ${LLM_BASE_URL:-https://openrouter.ai/api/v1}
+      LLM_MODEL: ${LLM_MODEL:-google/gemini-3.5-flash}
+      OPENWEATHER_MCP_URL: http://openweather-mcp:8010/mcp
+    stdin_open: true
+    tty: true

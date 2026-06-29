@@ -1,1 +1,6 @@
-.env    
+.env
+homework/.env
+.DS_Store
+.guardrails
+
+__pycache__/
